@@ -1,26 +1,10 @@
-"""
-Implémentation des Nuées dynamiques FROM SCRATCH.
-
-Les Nuées dynamiques sont ici considérées comme un cadre général
-permettant plusieurs types de représentations des classes.
-
-Représentations disponibles :
-1. Point représentatif
-2. Ensemble de points représentatifs
-3. Axes / composantes factorielles
-4. Distribution de probabilités
-5. Structure représentative
-
-Aucune fonction KMeans de Scikit-learn n'est utilisée.
-"""
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-# ============================================================
 # 1. GÉNÉRATION DES DONNÉES
-# ============================================================
+
 
 def generer_donnees():
     """
@@ -55,9 +39,9 @@ def generer_donnees():
     ])
 
 
-# ============================================================
+
 # 2. DISTANCE EUCLIDIENNE
-# ============================================================
+
 
 def distance_euclidienne(a, b):
     """
@@ -69,9 +53,9 @@ def distance_euclidienne(a, b):
     )
 
 
-# ============================================================
+
 # 3. POINT REPRÉSENTATIF
-# ============================================================
+
 
 def initialiser_points(X, k, seed=42):
     """
@@ -130,9 +114,9 @@ def mettre_a_jour_points(
     return nouveaux
 
 
-# ============================================================
+
 # 4. ENSEMBLE DE POINTS REPRÉSENTATIFS
-# ============================================================
+
 
 def initialiser_ensembles(
     X,
@@ -286,9 +270,9 @@ def mettre_a_jour_ensembles(
     return nouveaux
 
 
-# ============================================================
+
 # 5. AXES / COMPOSANTES FACTORIELLES
-# ============================================================
+
 
 def calculer_axes(points, nombre_axes=1):
     """
@@ -501,9 +485,9 @@ def mettre_a_jour_axes(
     return nouveaux
 
 
-# ============================================================
+
 # 6. DISTRIBUTION DE PROBABILITÉS
-# ============================================================
+
 
 def creer_distribution(points):
     """
@@ -692,9 +676,8 @@ def mettre_a_jour_distributions(
     return nouvelles
 
 
-# ============================================================
+
 # 7. STRUCTURE REPRÉSENTATIVE
-# ============================================================
 
 def creer_structure(points):
     """
@@ -876,9 +859,8 @@ def mettre_a_jour_structures(
     return nouvelles
 
 
-# ============================================================
+
 # 8. FONCTIONS GÉNÉRALES
-# ============================================================
 
 def initialiser(
     X,
@@ -1212,8 +1194,9 @@ def distance_representations(
     return max(distances)
 
 
-# ============================================================
+
 # 9. ALGORITHME GÉNÉRAL DES NUÉES DYNAMIQUES
+
 # ============================================================
 
 def nuees_dynamiques(
@@ -1251,9 +1234,9 @@ def nuees_dynamiques(
         max_iter + 1
     ):
 
-        # -----------------------------------------
+        
         # 1. Affectation
-        # -----------------------------------------
+
 
         etiquettes = affecter(
             X,
@@ -1261,10 +1244,9 @@ def nuees_dynamiques(
             type_representation
         )
 
-        # -----------------------------------------
+        
         # 2. Mise à jour
-        # -----------------------------------------
-
+        
         nouvelles_representations = mettre_a_jour(
             X,
             etiquettes,
@@ -1273,9 +1255,9 @@ def nuees_dynamiques(
             parametre
         )
 
-        # -----------------------------------------
+        
         # 3. Critère d'optimisation
-        # -----------------------------------------
+
 
         critere = calculer_critere(
             X,
@@ -1288,9 +1270,9 @@ def nuees_dynamiques(
             critere
         )
 
-        # -----------------------------------------
+
         # 4. Convergence
-        # -----------------------------------------
+        
 
         deplacement = distance_representations(
             representations,
@@ -1325,7 +1307,7 @@ def nuees_dynamiques(
     )
 
 
-# ============================================================
+
 # 10. AFFICHAGE DES RÉSULTATS
 # ============================================================
 
@@ -1364,7 +1346,7 @@ def afficher_resultats(
                 label=f"Classe {cluster + 1}"
             )
 
-    # --------------------------------------------------------
+
     # Affichage des représentations
     # --------------------------------------------------------
 
@@ -1488,9 +1470,9 @@ def afficher_resultats(
 
     plt.show()
 
-    # --------------------------------------------------------
+    
     # Critère
-    # --------------------------------------------------------
+
 
     plt.figure(
         figsize=(8, 5)
@@ -1533,7 +1515,7 @@ def afficher_resultats(
     plt.show()
 
 
-# ============================================================
+
 # 11. MENU
 # ============================================================
 
@@ -1574,7 +1556,7 @@ def afficher_menu():
     )
 
 
-# ============================================================
+
 # 12. PROGRAMME PRINCIPAL
 # ============================================================
 
@@ -1616,9 +1598,9 @@ def main():
             choix
         )
 
-        # ----------------------------------------------------
+
         # Nombre de classes
-        # ----------------------------------------------------
+        
 
         k = int(
             input(
@@ -1626,9 +1608,9 @@ def main():
             )
         )
 
-        # ----------------------------------------------------
+
         # Paramètres spécifiques
-        # ----------------------------------------------------
+
 
         parametre = None
 
@@ -1715,9 +1697,9 @@ def main():
                 "Critère : distance à la structure"
             )
 
-        # ----------------------------------------------------
+
         # Paramètres communs
-        # ----------------------------------------------------
+        
 
         max_iter = int(
             input(
@@ -1734,9 +1716,9 @@ def main():
             or 0.0001
         )
 
-        # ----------------------------------------------------
+
         # Exécution
-        # ----------------------------------------------------
+        
 
         print(
             "\n"
@@ -1766,9 +1748,9 @@ def main():
             seed=42
         )
 
-        # ----------------------------------------------------
+
         # Résultats
-        # ----------------------------------------------------
+
 
         print(
             "\n"
@@ -1835,9 +1817,9 @@ def main():
             break
 
 
-# ============================================================
+
 # EXÉCUTION
-# ============================================================
+
 
 if __name__ == "__main__":
     main()
