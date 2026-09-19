@@ -1,0 +1,884 @@
+\documentclass[12pt,a4paper]{report}
+
+% ============================================================
+% PACKAGES
+% ============================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{hyperref}
+
+% ============================================================
+% MISE EN PAGE
+% ============================================================
+
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+\onehalfspacing
+
+\setlength{\parindent}{0.7cm}
+\setlength{\parskip}{0.2cm}
+
+\renewcommand{\arraystretch}{1.4}
+
+% ============================================================
+% HYPERREF
+% ============================================================
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+% ============================================================
+% CODE PYTHON
+% ============================================================
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    showstringspaces=false,
+    columns=fullflexible,
+    keepspaces=true
+}
+
+% ============================================================
+% DOCUMENT
+% ============================================================
+
+\begin{document}
+
+% ============================================================
+% PAGE DE GARDE
+% ============================================================
+
+\begin{titlepage}
+\centering
+
+\vspace*{0.5cm}
+
+{\Large \textbf{Université de Kinshasa}}\\[0.2cm]
+{\large Faculté des Sciences et Technologies}\\[0.2cm]
+{\large Mention : Mathématiques, Statistique et Informatique}\\[0.3cm]
+
+{\large Cours : Science des données}\\[0.2cm]
+{\large Master 1, Semestre 2, 2025--2026}\\[0.5cm]
+
+% --- Logo ---
+\includegraphics[width=3.5cm]{unikin.PNG}\\[0.5cm]
+
+% --- Titre ---
+{\Large \textbf{Travail Pratique de Science des données}}\\[0.5cm]
+
+\rule{\linewidth}{0.5mm}\\[0.3cm]
+
+{\large \bfseries
+IMPLÉMENTATION DE L'ALGORITHME DES NUÉES DYNAMIQUES\\
+(From Scratch)
+}\\[0.5cm]
+
+\rule{\linewidth}{0.5mm}\\[0.8cm]
+
+% --- Auteur ---
+\raggedright
+\textbf{Présenté par :}\\[0.2cm]
+
+ZOLA NDIENE Priscilia
+
+\vfill
+
+% --- Enseignant ---
+\centering
+
+{\large \textbf{Professeur : KAFUNDA}}\\[0.2cm]
+Doct. KAMINGU Gradi\\[0.5cm]
+
+{\large \textbf{Année académique 2025--2026}}
+
+\end{titlepage}
+
+
+% ============================================================
+% TABLE DES MATIÈRES
+% ============================================================
+
+\tableofcontents
+
+\newpage
+
+% ============================================================
+% RÉSUMÉ
+% ============================================================
+
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+
+Ce travail porte sur la conception et l'implémentation d'une
+application des Nuées dynamiques permettant d'utiliser plusieurs
+types de représentations des classes.
+
+Contrairement à une implémentation limitée au modèle K-means,
+l'application proposée considère les Nuées dynamiques comme un cadre
+général dans lequel une classe peut être représentée par un point,
+un ensemble de points, des axes ou composantes factorielles, une
+distribution de probabilités ou encore une structure représentative.
+
+L'utilisateur peut choisir le nombre de classes ainsi que le type
+de représentation avant l'exécution de l'algorithme. Les paramètres
+spécifiques sont ensuite adaptés à la représentation choisie.
+
+L'algorithme général repose sur quatre éléments fondamentaux :
+la représentation de la classe, le critère d'affectation, la mise à
+jour de la représentation et le critère de convergence.
+
+L'implémentation est réalisée en Python à partir de zéro, sans utiliser
+une fonction de clustering préexistante telle que \texttt{KMeans()} de
+Scikit-learn.
+
+\textbf{Mots-clés :} Nuées dynamiques, Diday, clustering,
+K-means, représentation, prototypes, axes, distribution,
+Python, Machine Learning.
+
+% ============================================================
+% INTRODUCTION
+% ============================================================
+
+\chapter*{Introduction générale}
+\addcontentsline{toc}{chapter}{Introduction générale}
+
+Le clustering constitue une importante famille de méthodes
+d'apprentissage non supervisé. Il permet de regrouper des individus
+présentant des caractéristiques similaires sans disposer nécessairement
+de classes connues à l'avance.
+
+Parmi les méthodes de classification automatique figurent les
+Nuées dynamiques. Cette approche ne se limite pas à un seul type de
+représentation d'une classe. Elle permet de définir une représentation
+adaptée à la nature des données et au problème étudié.
+
+Une représentation particulièrement connue est le point représentatif,
+généralement le centroïde. Dans ce cas particulier, les Nuées dynamiques
+conduisent au principe du K-means.
+
+Cependant, limiter les Nuées dynamiques aux seuls centroïdes ne permet
+pas de mettre en évidence leur caractère général. Une classe peut
+également être représentée par plusieurs points, des axes ou composantes
+factorielles, une distribution de probabilités ou une structure
+représentative.
+
+L'objectif de ce travail est donc de concevoir une application permettant
+à l'utilisateur de choisir le type de représentation avant d'exécuter
+l'algorithme.
+
+% ============================================================
+% PROBLÉMATIQUE
+% ============================================================
+
+\section*{Problématique}
+\addcontentsline{toc}{section}{Problématique}
+
+Comment concevoir et implémenter une application des Nuées dynamiques
+capable de gérer plusieurs types de représentations des classes, tout
+en permettant d'adapter le critère d'affectation, la mise à jour et
+le critère de convergence à la représentation choisie ?
+
+% ============================================================
+% OBJECTIFS
+% ============================================================
+
+\section*{Objectif général}
+\addcontentsline{toc}{section}{Objectif général}
+
+L'objectif général est de concevoir et d'implémenter une application
+générale des Nuées dynamiques permettant de choisir différentes
+représentations des classes.
+
+\section*{Objectifs spécifiques}
+\addcontentsline{toc}{section}{Objectifs spécifiques}
+
+Les objectifs spécifiques sont :
+
+\begin{itemize}
+    \item comprendre le principe général des Nuées dynamiques ;
+    \item distinguer les Nuées dynamiques du cas particulier des
+    K-means ;
+    \item permettre le choix du nombre de classes ;
+    \item permettre le choix du type de représentation ;
+    \item adapter le critère d'affectation à la représentation choisie ;
+    \item mettre à jour les représentations des classes ;
+    \item définir un critère de convergence ;
+    \item visualiser les résultats obtenus ;
+    \item implémenter les mécanismes principaux sans utiliser
+    une fonction K-means existante.
+\end{itemize}
+
+% ============================================================
+% CHAPITRE 1
+% ============================================================
+
+\chapter{Fondements théoriques}
+
+\section{Classification non supervisée}
+
+La classification non supervisée consiste à rechercher automatiquement
+des groupes dans un ensemble de données sans disposer de classes
+préalablement étiquetées.
+
+Le clustering constitue l'une des principales approches de classification
+non supervisée.
+
+\section{Principe des Nuées dynamiques}
+
+Les Nuées dynamiques constituent un cadre général de classification
+dans lequel chaque classe est décrite par une représentation appelée
+nuée.
+
+Le fonctionnement général peut être résumé par les étapes suivantes :
+
+\begin{enumerate}
+    \item choisir le nombre de classes ;
+    \item choisir une représentation des classes ;
+    \item initialiser les représentations ;
+    \item affecter les individus aux classes ;
+    \item mettre à jour les représentations ;
+    \item calculer un critère d'optimisation ;
+    \item vérifier la convergence ;
+    \item répéter les étapes jusqu'à convergence.
+\end{enumerate}
+
+\section{Représentation d'une classe}
+
+La représentation d'une classe dépend de la nature des données et du
+problème étudié.
+
+Dans cette application, cinq représentations sont considérées.
+
+\begin{table}[H]
+\centering
+\caption{Types de représentations considérés}
+\label{tab:representations}
+\begin{tabular}{|c|l|p{8cm}|}
+\hline
+\textbf{N°} & \textbf{Représentation} & \textbf{Principe} \\
+\hline
+1 & Point représentatif &
+Une classe est représentée par un seul point, généralement le centroïde. \\
+\hline
+2 & Ensemble de points représentatifs &
+Une classe est représentée par plusieurs points prototypes. \\
+\hline
+3 & Axes / composantes factorielles &
+Une classe est représentée par un centre et une structure multidimensionnelle fondée sur des axes principaux. \\
+\hline
+4 & Distribution de probabilités &
+Une classe est décrite par une distribution caractérisée ici par une moyenne et une covariance. \\
+\hline
+5 & Structure représentative &
+Une classe est décrite par une structure adaptée aux données ; l'implémentation proposée utilise une structure d'intervalle multidimensionnel. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Point représentatif et cas particulier des K-means}
+
+Lorsque chaque classe est représentée par un seul point, le point
+représentatif peut être choisi comme le centroïde des observations
+de la classe.
+
+La distance euclidienne peut alors être utilisée pour affecter chaque
+observation au centroïde le plus proche.
+
+Cette configuration correspond au cas classique des K-means.
+
+Ainsi :
+
+\[
+\boxed{
+\text{K-means}
+\subset
+\text{Nuées dynamiques}
+}
+\]
+
+dans le cadre de cette modélisation.
+
+\section{Ensemble de points représentatifs}
+
+Une classe peut également être représentée par plusieurs points
+représentatifs.
+
+Si une classe contient plusieurs sous-structures, un seul centroïde
+peut ne pas suffire à décrire correctement sa forme.
+
+L'utilisation de plusieurs prototypes permet alors de représenter
+plusieurs zones de la classe.
+
+Dans l'application, la distance d'un individu à une classe est définie
+comme la distance au représentant le plus proche.
+
+\section{Axes ou composantes factorielles}
+
+Une classe peut être représentée par une structure multidimensionnelle
+composée d'un centre et d'un ou plusieurs axes.
+
+Dans l'implémentation proposée, les axes sont déterminés à partir de
+la matrice de covariance des observations de la classe.
+
+La distance utilisée correspond à la distance entre l'individu et
+l'espace engendré par les axes de représentation.
+
+\section{Distribution de probabilités}
+
+Une classe peut être représentée par une distribution statistique.
+
+Dans l'application, une représentation gaussienne simple est utilisée.
+Elle est définie par :
+
+\[
+R_j = (\mu_j,\Sigma_j)
+\]
+
+où $\mu_j$ représente la moyenne de la classe et $\Sigma_j$ sa matrice
+de covariance.
+
+La distance de Mahalanobis est utilisée pour comparer une observation
+à la distribution.
+
+\[
+d_M(x,\mu_j)
+=
+\sqrt{
+(x-\mu_j)^T
+\Sigma_j^{-1}
+(x-\mu_j)
+}
+\]
+
+\section{Structure représentative}
+
+La représentation structurelle est prévue comme une représentation
+plus générale et extensible.
+
+Dans cette première implémentation, une classe est représentée par
+un intervalle multidimensionnel défini par un minimum et un maximum
+pour chaque variable.
+
+Cette représentation permet de décrire une région occupée par les
+observations de la classe.
+
+% ============================================================
+% CHAPITRE 2
+% ============================================================
+
+\chapter{Conception et implémentation}
+
+\section{Architecture générale}
+
+Le fonctionnement de l'application est organisé comme suit :
+
+\begin{verbatim}
+Données
+   |
+   v
+Choix du nombre de classes K
+   |
+   v
+Choix de la représentation
+   |
+   v
+Initialisation des représentations
+   |
+   v
+Affectation des individus
+   |
+   v
+Mise à jour des représentations
+   |
+   v
+Calcul du critère
+   |
+   v
+Test de convergence
+   |
+   +------ Non ------> Nouvelle itération
+   |
+   Oui
+   |
+   v
+Résultats
+\end{verbatim}
+
+\section{Choix de la représentation}
+
+Au démarrage, l'utilisateur peut sélectionner l'une des cinq
+représentations.
+
+\begin{table}[H]
+\centering
+\caption{Menu de choix de l'application}
+\label{tab:menu}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{Choix} & \textbf{Représentation} & \textbf{Paramètre spécifique} \\
+\hline
+1 & Point représentatif & Type de point : centroïde \\
+\hline
+2 & Ensemble de points & Nombre de représentants par classe \\
+\hline
+3 & Axes / composantes & Nombre d'axes \\
+\hline
+4 & Distribution de probabilités & Moyenne + covariance \\
+\hline
+5 & Structure représentative & Structure min/max \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Paramètres généraux}
+
+Certains paramètres sont communs à toutes les représentations.
+
+\begin{table}[H]
+\centering
+\caption{Paramètres généraux de l'application}
+\label{tab:parametres}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\textbf{Paramètre} & \textbf{Valeur} & \textbf{Description} \\
+\hline
+Nombre de classes $K$ & 3 & Nombre de classes recherchées dans l'expérimentation. \\
+\hline
+Nombre maximal d'itérations & 100 & Nombre maximal d'itérations autorisées. \\
+\hline
+Tolérance & $10^{-4}$ & Seuil utilisé pour la convergence. \\
+\hline
+Graine aléatoire & 42 & Permet de reproduire l'initialisation. \\
+\hline
+Nombre d'observations & 90 & Taille du jeu de données artificiel. \\
+\hline
+Dimension & 2 & Nombre de variables utilisées. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Les quatre éléments fondamentaux}
+
+L'algorithme est organisé autour de quatre éléments.
+
+\begin{table}[H]
+\centering
+\caption{Éléments fondamentaux des Nuées dynamiques}
+\label{tab:elements}
+\begin{tabular}{|c|l|p{8cm}|}
+\hline
+\textbf{N°} & \textbf{Élément} & \textbf{Rôle} \\
+\hline
+1 & Représentation &
+Décrit la manière dont chaque classe est représentée. \\
+\hline
+2 & Critère d'affectation &
+Détermine la classe à laquelle un individu doit être affecté. \\
+\hline
+3 & Mise à jour &
+Construit une nouvelle représentation à partir des individus affectés. \\
+\hline
+4 & Convergence &
+Détermine si les représentations sont suffisamment stables pour arrêter l'algorithme. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Correspondance entre représentations et critères}
+
+\begin{table}[H]
+\centering
+\caption{Critères utilisés selon la représentation}
+\label{tab:criteres}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Représentation} & \textbf{Critère} & \textbf{Mise à jour} \\
+\hline
+Point & Distance euclidienne & Moyenne des observations \\
+\hline
+Ensemble de points & Minimum des distances & Moyenne des sous-groupes \\
+\hline
+Axes & Distance à l'espace représenté & Centre + axes principaux \\
+\hline
+Distribution & Distance de Mahalanobis & Moyenne + covariance \\
+\hline
+Structure & Distance à la structure & Minimum + maximum \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Jeu de données}
+
+L'expérimentation utilise un jeu de données artificiel constitué de
+90 observations en deux dimensions.
+
+\begin{table}[H]
+\centering
+\caption{Caractéristiques des données}
+\label{tab:donnees}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\textbf{Caractéristique} & \textbf{Valeur} & \textbf{Description} \\
+\hline
+Nombre d'observations & 90 & Points générés artificiellement. \\
+\hline
+Nombre de variables & 2 & Coordonnées utilisées pour la représentation. \\
+\hline
+Nombre de groupes recherchés & 3 & Valeur utilisée pour l'expérimentation. \\
+\hline
+Observations par groupe initial & 30 & Répartition utilisée lors de la génération. \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Organisation du programme}
+
+\begin{table}[H]
+\centering
+\caption{Principales fonctions du programme}
+\label{tab:fonctions}
+\begin{tabular}{|l|p{8.5cm}|}
+\hline
+\textbf{Fonction} & \textbf{Rôle} \\
+\hline
+\texttt{generer\_donnees()} &
+Génère le jeu de données artificiel. \\
+\hline
+\texttt{initialiser()} &
+Initialise les représentations selon le choix de l'utilisateur. \\
+\hline
+\texttt{affecter()} &
+Affecte les observations aux classes selon le critère choisi. \\
+\hline
+\texttt{mettre\_a\_jour()} &
+Met à jour les représentations des classes. \\
+\hline
+\texttt{calculer\_critere()} &
+Calcule le critère d'optimisation. \\
+\hline
+\texttt{distance\_representations()} &
+Mesure le déplacement des représentations entre deux itérations. \\
+\hline
+\texttt{nuees\_dynamiques()} &
+Coordonne l'ensemble des étapes de l'algorithme. \\
+\hline
+\texttt{afficher\_resultats()} &
+Produit les visualisations finales. \\
+\hline
+\end{tabular}
+\end{table}
+
+% ============================================================
+% CHAPITRE 3
+% ============================================================
+
+\chapter{Expérimentation et résultats}
+
+\section{Déroulement de l'expérimentation}
+
+L'utilisateur commence par sélectionner le type de représentation.
+Il indique ensuite le nombre de classes $K$, puis les paramètres
+spécifiques à la représentation sélectionnée.
+
+L'algorithme initialise les représentations et commence les itérations.
+
+À chaque itération :
+
+\begin{enumerate}
+    \item les observations sont affectées aux classes ;
+    \item les représentations sont mises à jour ;
+    \item le critère d'optimisation est calculé ;
+    \item le déplacement des représentations est calculé ;
+    \item la condition de convergence est vérifiée.
+\end{enumerate}
+
+\section{Résultats graphiques}
+
+L'application génère une représentation graphique des classes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Cléo.PNG}
+    \caption{Visualisation des classes obtenues}
+    \label{fig:clusters}
+\end{figure}
+
+L'application produit également une courbe montrant l'évolution
+du critère d'optimisation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{cléa.PNG}
+    \caption{Évolution du critère d'optimisation}
+    \label{fig:critere}
+\end{figure}
+
+\section{Analyse des résultats}
+
+Les résultats permettent d'observer l'influence du choix de la
+représentation sur le processus de classification.
+
+Dans le cas du point représentatif, chaque classe est résumée par
+un seul centroïde. Cette configuration correspond au cas particulier
+du K-means.
+
+Dans le cas de l'ensemble de points représentatifs, plusieurs
+prototypes sont utilisés pour décrire une même classe. Cette
+représentation permet de tenir compte de plusieurs zones au sein
+d'une classe.
+
+La représentation par axes permet de tenir compte d'une organisation
+multidimensionnelle des observations.
+
+La représentation probabiliste prend en compte la moyenne et la
+dispersion des observations à travers la matrice de covariance.
+
+Enfin, la structure représentative fournit une représentation
+extensible pouvant être adaptée à d'autres types de données ou
+d'autres critères.
+
+\section{Comparaison conceptuelle}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des représentations}
+\label{tab:comparaison}
+\begin{tabular}{|l|p{3.5cm}|p{4cm}|p{3cm}|}
+\hline
+\textbf{Représentation} &
+\textbf{Éléments représentatifs} &
+\textbf{Information décrite} &
+\textbf{Exemple de critère} \\
+\hline
+Point &
+Un point &
+Position centrale &
+Euclidien \\
+\hline
+Ensemble de points &
+Plusieurs points &
+Plusieurs zones de la classe &
+Minimum des distances \\
+\hline
+Axes &
+Centre + axes &
+Organisation multidimensionnelle &
+Distance à l'espace \\
+\hline
+Distribution &
+Moyenne + covariance &
+Position et dispersion &
+Mahalanobis \\
+\hline
+Structure &
+Bornes min/max &
+Région occupée &
+Distance à la structure \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Avantages}
+
+L'application présente plusieurs avantages :
+
+\begin{itemize}
+    \item elle distingue clairement les Nuées dynamiques du seul
+    K-means ;
+    \item elle permet de sélectionner une représentation ;
+    \item les critères sont adaptés aux représentations ;
+    \item l'architecture peut être étendue à d'autres représentations ;
+    \item l'algorithme principal est implémenté manuellement ;
+    \item les résultats peuvent être visualisés.
+\end{itemize}
+
+\section{Limites}
+
+Cette première version présente certaines limites :
+
+\begin{itemize}
+    \item les données utilisées pour l'expérimentation sont artificielles ;
+    \item les représentations proposées ne couvrent pas toutes les
+    possibilités théoriques des Nuées dynamiques ;
+    \item la représentation structurelle utilisée constitue une
+    première structure générique ;
+    \item certaines représentations nécessitent des critères plus
+    spécialisés selon la nature des données ;
+    \item l'application est principalement destinée à l'étude et à
+    la compréhension de l'algorithme.
+\end{itemize}
+
+% ============================================================
+% CONCLUSION
+% ============================================================
+
+\chapter*{Conclusion générale}
+\addcontentsline{toc}{chapter}{Conclusion générale}
+
+Ce travail a permis de concevoir une application des Nuées dynamiques
+en considérant la représentation d'une classe comme un élément central
+de l'algorithme.
+
+Contrairement à une implémentation limitée au K-means, l'application
+permet de choisir entre plusieurs représentations : point représentatif,
+ensemble de points représentatifs, axes ou composantes factorielles,
+distribution de probabilités et structure représentative.
+
+Cette conception permet de mettre en évidence le fait que les K-means
+constituent un cas particulier correspondant à une représentation de
+chaque classe par un seul point, généralement le centroïde.
+
+L'algorithme implémenté repose sur quatre éléments essentiels :
+la représentation, le critère d'affectation, la mise à jour de la
+représentation et le critère de convergence.
+
+L'architecture développée reste également extensible, puisqu'une
+nouvelle représentation peut être ajoutée en définissant sa méthode
+d'initialisation, son critère d'affectation, sa méthode de mise à jour
+et son critère de convergence.
+
+% ============================================================
+% RÉFÉRENCES
+% ============================================================
+
+\chapter*{Références}
+\addcontentsline{toc}{chapter}{Références}
+
+\begin{enumerate}
+
+    \item Diday, E. et Simon, J. C.
+    Travaux sur les méthodes des Nuées dynamiques et la classification
+    automatique.
+
+    \item Bishop, C. M. (2006).
+    \textit{Pattern Recognition and Machine Learning}.
+    Springer.
+
+    \item Han, J., Kamber, M. et Pei, J. (2012).
+    \textit{Data Mining: Concepts and Techniques}.
+    Morgan Kaufmann.
+
+    \item Documentation Python.
+
+    \item Documentation NumPy.
+
+    \item Documentation Matplotlib.
+
+\end{enumerate}
+
+% ============================================================
+% ANNEXE
+% ============================================================
+
+\appendix
+
+\chapter{Extrait du code Python}
+
+Le programme complet est disponible dans le dépôt GitHub associé au
+travail. L'extrait suivant présente la fonction principale qui orchestre
+les quatre éléments fondamentaux des Nuées dynamiques.
+
+\begin{lstlisting}
+def nuees_dynamiques(
+    X,
+    k,
+    type_representation,
+    parametre=None,
+    max_iter=100,
+    tolerance=1e-4,
+    seed=42
+):
+
+    representations = initialiser(
+        X,
+        k,
+        type_representation,
+        parametre,
+        seed
+    )
+
+    historique_critere = []
+
+    for iteration in range(
+        1,
+        max_iter + 1
+    ):
+
+        etiquettes = affecter(
+            X,
+            representations,
+            type_representation
+        )
+
+        nouvelles_representations = mettre_a_jour(
+            X,
+            etiquettes,
+            representations,
+            type_representation,
+            parametre
+        )
+
+        critere = calculer_critere(
+            X,
+            etiquettes,
+            nouvelles_representations,
+            type_representation
+        )
+
+        historique_critere.append(
+            critere
+        )
+
+        deplacement = distance_representations(
+            representations,
+            nouvelles_representations,
+            type_representation
+        )
+
+        representations = (
+            nouvelles_representations
+        )
+
+        if deplacement < tolerance:
+            break
+
+    return (
+        etiquettes,
+        representations,
+        historique_critere,
+        iteration
+    )
+\end{lstlisting}
+
+\end{document}
